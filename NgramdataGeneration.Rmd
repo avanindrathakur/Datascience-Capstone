@@ -1,0 +1,81 @@
+---
+title: "Capstone Project"
+author: "Avanindra Nath Thakur"
+date: "14/05/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r capstone,echo=TRUE}
+### Data Science Capstone Project
+### Creation of Ngram files 
+# Loading the required packages
+
+suppressPackageStartupMessages({
+      library (rJava)
+      library (tm)
+      library (RWeka)
+      library (openNLP)
+      library (NLP)
+      library (ggplot2)
+      library(tidytext)
+      library(tidyverse)
+      library(stringr)
+      library(wordcloud)
+      library(ngram)
+})
+# Getting the required data
+if(!file.exists("Coursera-SwiftKey.zip")){
+      download.file("https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip", "Coursera-SwiftKey.zip")
+      unzip("Coursera-SwiftKey.zip")
+}
+# Loading the Data
+blogsFile <- "./final/en_US/en_US.blogs.txt"
+newsFile <- "./final/en_US/en_US.news.txt"
+twitterFile <- "./final/en_US/en_US.twitter.txt"
+# Read the Data using readLines with the sample size of 5000
+text1 <- readLines (blogsFile,5000)
+text2 <- readLines(newsFile,5000)
+text3 <- readLines(twitterFile,5000)
+# combining all the three samples to make final text
+finaltext <- paste (text1,text2,text3)
+
+corpus <- VCorpus(VectorSource(finaltext))
+#CLeaning the data by removing irralevant part
+corpus <- tm_map(corpus, removeNumbers) 
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, content_transformer(tolower)) 
+corpus <- tm_map(corpus, removePunctuation) 
+cleanData <- data.frame(text=unlist(sapply(corpus, `[`, "content")), stringsAsFactors=F)
+str(cleanData)
+head(cleanData)
+# Using Ngram to convert data in three catagories 
+onegram <- NGramTokenizer(cleanData, Weka_control(min = 1, max = 1))
+twogram <- NGramTokenizer(cleanData, Weka_control(min = 2, max = 2, delimiters = " \\r\\n\\t.,;:\"()?!"))
+threegram <- NGramTokenizer(cleanData, Weka_control(min = 3, max = 3, delimiters = " \\r\\n\\t.,;:\"()?!"))
+fourgram <- NGramTokenizer(cleanData, Weka_control(min = 4, max = 4, delimiters = " \\r\\n\\t.,;:\"()?!"))
+# converting in to dataframes 
+one_gram <- data.frame(table(onegram))
+two_gram<- data.frame(table(twogram))
+three_gram <- data.frame(table(threegram))
+four_gram <- data.frame(table(fourgram))
+# final data frame with sorting 
+
+unigram <- one_gram[order(one_gram$Freq,decreasing = TRUE),]
+bigram <- two_gram[order(two_gram$Freq,decreasing = TRUE),]
+trigram <- three_gram[order(three_gram$Freq,decreasing = TRUE),]
+quadgram <- four_gram[order(four_gram$Freq, decreasing = TRUE),]
+
+getwd()
+
+# Save the data for the Next Word Predictor Shiny App
+dir.create("NgramData", showWarnings = FALSE)
+saveRDS(unigram, "./NgramData/unigram.RData")
+saveRDS(bigram, "./NgramData/bigram.RData")
+saveRDS(trigram,"./NgramData/trigram.RData")
+saveRDS(quadgram,"./NgramData/quadgram.RData")
+
+```
