@@ -1,0 +1,34 @@
+Data Science Capstone: Final Presentation 
+========================================================
+author: Avanindra Nath Thakur
+date: 20/05/2021
+autosize: true
+
+Introduction 
+========================================================
+
+- The Word prediction App can be used to identify widely used words and this is particularly important for analyzing data sets containing text such as Facebook, twitter, Blogs, News etc. 
+- This assignment is the part of Data Science Specialization from Johns Hopkins University largely dealing with exploratory data analysis, data cleaning text mining, machine learning, and R programming.
+
+- The project is to create an App which would predict the next word in a given sequence of words. The analysis is based on text mining by using data from SwiftKey. 
+
+
+The Process to get the N- Gram Dataset 
+========================================================
+- firslty, Text data sets, provided by Twitter, news and blogs by Swiftkey were downloaded. With the help of various packages such as N grams, tidytext, etc. the data is tokenized in three parts -  bigrams, trigrams and quadgrams with a certain sample size. 
+
+- Secondly, all data stored in the files as bigram data, trigram data and quadgram data are cleaned and are uploaded in the Github. 
+The Final Application and Ngram Data
+========================================================
+
+- The method of creating Shiny Application is based on the development of user interface for input text and doing word prediction. This App can be accessed through the following link: https://avanindra.shinyapps.io/newproject/
+
+- The relevant R codes for tokenization and Ngram data can be accessed in the Github at the following link: https://github.com/avanindrathakur/Datascience-Capstone
+The Model 
+========================================================
+- First, the Compressed data are loaded in the server
+- Second, Input of a word or a sequence of words will predict on the basis of 
+-first, quadgram.RData data if the last used 3 words are in the dataset
+-second, trigram.RData if the last used 2 words are in the dataset
+-third, bigram.RData if the last used word is in the dataset
+-fourth, the word with highest frequency is returned
